@@ -25,6 +25,8 @@ public class Duck extends Sprite implements IMovable{
 
         Random random = new Random();
         this.currentState = random.nextInt(2) ;
+        Image img = new Image("DuckHunt/duckDead.png");
+        this.setFill(new ImagePattern(img));
         //Image img = new Image("/home/leja/Desktop/PJI/MyJavaProject/src/DuckHunt/duckDead.png");
         //duck.setFill(new ImagePattern(img));
     }

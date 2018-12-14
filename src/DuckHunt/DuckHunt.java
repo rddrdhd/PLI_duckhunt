@@ -5,8 +5,9 @@ import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
@@ -30,11 +31,17 @@ public class DuckHunt extends Application {
     public static final int gameWidth = 800;
     public static final int gameHeight = 600;
 
+
+//then you set to your node
+
     @Override
     public void  start(Stage stage) {
 
-
         Scene scene = new Scene(createContent());
+
+
+        //BackgroundImage myBI= new BackgroundImage(new Image("gameBackground.png",32,32,false,true));
+        //scene.setBackground(new Background(myBI));
 
         scene.setOnMousePressed(new EventHandler<MouseEvent>() {
             public void handle(MouseEvent event) {
@@ -66,7 +73,6 @@ public class DuckHunt extends Application {
         stage.setTitle("DuckHunt");
         stage.show();
     }
-
 
 
     private void onUpdate(){
@@ -105,7 +111,16 @@ public class DuckHunt extends Application {
 
     private Parent createContent(){
         root.setPrefSize(gameWidth,gameHeight);
-        root.setStyle("-fx-background-color: deepskyblue;");
+        //root.setStyle("-fx-background-color: deepskyblue;");
+        Image img = new Image("DuckHunt/gameBackground.png");
+        BackgroundImage background = new BackgroundImage(img,
+                BackgroundRepeat.NO_REPEAT,
+                BackgroundRepeat.NO_REPEAT,
+                BackgroundPosition.DEFAULT,
+                BackgroundSize.DEFAULT);
+        root.setBackground(new Background(background));
+        root.setMinWidth(img.getWidth());
+        root.setMinHeight(img.getHeight());
         newRound();
         timer = new AnimationTimer() {
             @Override
