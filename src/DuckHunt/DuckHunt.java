@@ -3,6 +3,7 @@ package DuckHunt;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.event.EventHandler;
+import javafx.scene.ImageCursor;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -38,6 +39,8 @@ public class DuckHunt extends Application {
     public void  start(Stage stage) {
 
         Scene scene = new Scene(createContent());
+        Image cursor = new Image("DuckHunt/images/gunsight.png");
+        scene.setCursor(new ImageCursor(cursor, cursor.getWidth()/2, cursor.getHeight()/2 ));
 
 
         //BackgroundImage myBI= new BackgroundImage(new Image("gameBackground.png",32,32,false,true));

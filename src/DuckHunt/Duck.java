@@ -22,9 +22,9 @@ public class Duck extends Sprite implements IMovable{
     private Image F3;
     public static final int GOING_UP_RIGHT = 0;
     public static final int GOING_UP_LEFT = 1;
-    public static final int GOING_RIGHT = 2;
-    public static final int GOING_LEFT = 3;
-    public static final int GOING_UP = 4;
+    //public static final int GOING_RIGHT = 2;
+    //public static final int GOING_LEFT = 3;
+    //public static final int GOING_UP = 4;
     public static final int DYING = 5;
     public static final int FALLING = 6;
     public static final int DEAD = 7;
@@ -71,6 +71,8 @@ public class Duck extends Sprite implements IMovable{
                 break;
             case FALLING:
                 this.setFill(new ImagePattern(F0));
+            default:
+                this.setFill(new ImagePattern(D));
         }
     }
     @Override
