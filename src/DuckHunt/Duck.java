@@ -8,7 +8,18 @@ import java.util.Random;
 
 public class Duck extends Sprite implements IMovable{
     private  static Sprite duck;
-
+    private Image GUR0;
+    private Image GUR1;
+    private Image GUL0;
+    private Image GUL1;
+    private Image GR;
+    private Image GL;
+    private Image GU;
+    private Image D;
+    private Image F0;
+    private Image F1;
+    private Image F2;
+    private Image F3;
     public static final int GOING_UP_RIGHT = 0;
     public static final int GOING_UP_LEFT = 1;
     public static final int GOING_RIGHT = 2;
@@ -21,14 +32,13 @@ public class Duck extends Sprite implements IMovable{
     private double speedY = 0.4;//new Random().nextFloat(1.0);
     private int currentState;
     Duck(){
-        super(Sprite.randomX(), 391,80,80,"duck",Color.BLANCHEDALMOND);
 
+        super(Sprite.randomX(), 391,80,80,"duck",Color.BLANCHEDALMOND);
+        loadImages();
         Random random = new Random();
         this.currentState = random.nextInt(2) ;
-        Image img = new Image("DuckHunt/duckDead.png");
-        this.setFill(new ImagePattern(img));
-        //Image img = new Image("/home/leja/Desktop/PJI/MyJavaProject/src/DuckHunt/duckDead.png");
-        //duck.setFill(new ImagePattern(img));
+        //Image img = new Image("DuckHunt/images/duckDead.png");
+        //this.setFill(new ImagePattern(img));
     }
     public int getCurrentState(){
         return this.currentState;
@@ -36,7 +46,33 @@ public class Duck extends Sprite implements IMovable{
     public void setCurrentState(int state){
         this.currentState = state;
     }
+    private void loadImages(){
+        GUR0 = new Image("DuckHunt/images/duckUpRight1.png");
+        GUR1 = new Image("DuckHunt/images/duckUpRight0.png");
+        GUL0 = new Image("DuckHunt/images/duckUpLeft1.png");
+        GUL1 = new Image("DuckHunt/images/duckUpLeft0.png");
+        F0 = new Image("DuckHunt/images/duckPrecipitate0.png");
+        F1 = new Image("DuckHunt/images/duckPrecipitate1.png");
+        F2 = new Image("DuckHunt/images/duckPrecipitate2.png");
+        F3 = new Image("DuckHunt/images/duckPrecipitate3.png");
+        D = new Image("DuckHunt/images/duckDead.png");
+    }
 
+    public void setImage(int state){
+        switch(state){
+            case GOING_UP_RIGHT:
+                this.setFill(new ImagePattern(GUR0));
+                break;
+            case GOING_UP_LEFT:
+                this.setFill(new ImagePattern(GUL0));
+                break;
+            case DYING:
+                this.setFill(new ImagePattern(D));
+                break;
+            case FALLING:
+                this.setFill(new ImagePattern(F0));
+        }
+    }
     @Override
     public String toString() {
         return "Duck (x=" + this.getTranslateX() + ", y=" + this.getTranslateY() + ", width=" + this.getWidth() + ", height="
@@ -89,14 +125,14 @@ public class Duck extends Sprite implements IMovable{
             this.moveLeft();
 
             if (this.getTranslateX() < 0) {
-                this.currentState = 0;
+                this.currentState = GOING_UP_RIGHT;
             }
         } else if (this.currentState == GOING_UP_RIGHT){
             this.moveRight();
 
             if (this.getTranslateX() + this.getWidth() > DuckHunt.gameWidth) {
-                this.currentState = 1;
-            }
+                this.currentState = GOING_UP_LEFT;
+            }/*
         } else if(this.currentState == GOING_UP){
             this.moveUp();
         } else if(this.currentState == GOING_LEFT){
@@ -114,14 +150,9 @@ public class Duck extends Sprite implements IMovable{
         if(this.currentState == DEAD){
             //this.setDisabled(true);
             System.out.println("DEAD" + this);
-        }
+        }*/
 
     }
 
-    public boolean isInBound(double x, double y) {
-        return (duck.getTranslateX() <= x) &&
-                (x <= (duck.getTranslateX() + duck.getWidth())) &&
-                (duck.getTranslateY() <= y) &&
-                (y <= (duck.getTranslateY() + duck.getHeight()));
-    }
-}
+
+}}

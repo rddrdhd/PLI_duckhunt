@@ -16,20 +16,20 @@ import java.util.List;
 
 public class DuckHunt extends Application {
 
+    public static final int gameWidth = 800;
+    public static final int gameHeight = 600;
+
     private AnimationTimer timer;
     private Pane root = new Pane();
+    private List<Duck> ducks = new ArrayList<>();
+
     private int NUM_OF_DUCKS = 2;
     private final int NUM_OF_AMMO = 3;
-    private List<Duck> ducks = new ArrayList<>();
+    private int ammo = NUM_OF_AMMO;
     private int roundNum = 0;
-
     private int killedDucks = 0;
     private int missedDucks = 0;
     private int missedAmmo = 0;
-    private int ammo = NUM_OF_AMMO;
-
-    public static final int gameWidth = 800;
-    public static final int gameHeight = 600;
 
 
 //then you set to your node
@@ -81,23 +81,17 @@ public class DuckHunt extends Application {
             duck.moveLikeDuck();
             if (duck.getTranslateY() + duck.getHeight() < 0 || ammo == 0) {
                 ducksToRemove.add(duck);
-                //missedDucks++;
+                missedDucks++;
             }
+
+            duck.setImage(duck.getCurrentState());
         });
         ducksToRemove.forEach(this::removeDuck);
 
         if(this.ducks.isEmpty()){
-            //System.out.println("New ducks preparing");
-           /* try {
-                Thread.sleep(3000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }*/
             System.out.println(" You missed " + missedAmmo + " bullets in this round.");
             System.out.println(" You missed " + missedDucks + " ducks.");
             newRound();
-
-            //missedDucks++;
         }
         if(ammo == 0){
             try{
@@ -112,7 +106,7 @@ public class DuckHunt extends Application {
     private Parent createContent(){
         root.setPrefSize(gameWidth,gameHeight);
         //root.setStyle("-fx-background-color: deepskyblue;");
-        Image img = new Image("DuckHunt/gameBackground.png");
+        Image img = new Image("DuckHunt/images/gameBackground.png");
         BackgroundImage background = new BackgroundImage(img,
                 BackgroundRepeat.NO_REPEAT,
                 BackgroundRepeat.NO_REPEAT,
