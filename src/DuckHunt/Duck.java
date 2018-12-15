@@ -1,5 +1,6 @@
 package DuckHunt;
 
+import com.sun.xml.internal.bind.v2.TODO;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
@@ -29,21 +30,20 @@ public class Duck extends Sprite implements IMovable{
     public static final int FALLING = 6;
     public static final int DEAD = 7;
     private double speedX = 0.6;
-    private double speedY = 0.4;//new Random().nextFloat(1.0);
+    private double speedY = 0.4;
     private int currentState;
-    Duck(){
 
+    Duck(){
         super(Sprite.randomX(), 391,80,80,"duck",Color.BLANCHEDALMOND);
         loadImages();
         Random random = new Random();
         this.currentState = random.nextInt(2) ;
-        //Image img = new Image("DuckHunt/images/duckDead.png");
-        //this.setFill(new ImagePattern(img));
     }
-    public int getCurrentState(){
+
+    int getCurrentState(){
         return this.currentState;
     }
-    public void setCurrentState(int state){
+    void setCurrentState(int state){
         this.currentState = state;
     }
     private void loadImages(){
@@ -134,7 +134,15 @@ public class Duck extends Sprite implements IMovable{
 
             if (this.getTranslateX() + this.getWidth() > DuckHunt.gameWidth) {
                 this.currentState = GOING_UP_LEFT;
-            }/*
+            }
+        } else if (this.currentState == DYING){
+                this.moveDown();
+               // System.out.println("BOOM");
+            }else if(this.currentState == FALLING){
+                this.moveDown();
+            }
+
+            /*
         } else if(this.currentState == GOING_UP){
             this.moveUp();
         } else if(this.currentState == GOING_LEFT){
@@ -154,7 +162,7 @@ public class Duck extends Sprite implements IMovable{
             System.out.println("DEAD" + this);
         }*/
 
-    }
+
 
 
 }}

@@ -20,20 +20,15 @@ public class DuckHunt extends Application {
     public static final int gameWidth = 800;
     public static final int gameHeight = 600;
 
-    private AnimationTimer timer;
     private Pane root = new Pane();
     private List<Duck> ducks = new ArrayList<>();
 
-    private int NUM_OF_DUCKS = 2;
     private final int NUM_OF_AMMO = 3;
     private int ammo = NUM_OF_AMMO;
     private int roundNum = 0;
     private int killedDucks = 0;
     private int missedDucks = 0;
     private int missedAmmo = 0;
-
-
-//then you set to your node
 
     @Override
     public void  start(Stage stage) {
@@ -42,31 +37,17 @@ public class DuckHunt extends Application {
         Image cursor = new Image("DuckHunt/images/gunsight.png");
         scene.setCursor(new ImageCursor(cursor, cursor.getWidth()/2, cursor.getHeight()/2 ));
 
-
-        //BackgroundImage myBI= new BackgroundImage(new Image("gameBackground.png",32,32,false,true));
-        //scene.setBackground(new Background(myBI));
-
         scene.setOnMousePressed(new EventHandler<MouseEvent>() {
             public void handle(MouseEvent event) {
-                int Nahasapeemapetilon = killedDucks; //pomocna promenna pro pozdejsi porovnani
-                for (Duck quack : ducks) {
-                    if (quack.isPressed()) { //pokud se trefi hrac do kacenky
-                        quack.setCurrentState(Duck.DYING);
-                        quack.setCurrentState(Duck.FALLING);
-                        quack.setCurrentState(Duck.DEAD);
-                        removeDuck(quack);
-
+                for (Duck duck : ducks) {
+                    if (duck.isPressed()) {
+                        duck.setCurrentState(Duck.DYING);
+                        removeDuck(duck);
                         killedDucks++;
                         missedAmmo--;
-
-                        System.out.println("You killed " + killedDucks + ". duck.");
+                        System.out.println(" You killed " + killedDucks + ". duck.");
                         break;
                     }
-
-                }
-                if(Nahasapeemapetilon <= killedDucks){ // porovnavam stav zabitych kacenek pred/po kliknuti
-                    //missedDucks++;
-                    Nahasapeemapetilon = killedDucks;
                 }
                 ammo--;
                 missedAmmo++;
@@ -86,29 +67,18 @@ public class DuckHunt extends Application {
                 ducksToRemove.add(duck);
                 missedDucks++;
             }
-
             duck.setImage(duck.getCurrentState());
         });
         ducksToRemove.forEach(this::removeDuck);
-
         if(this.ducks.isEmpty()){
             System.out.println(" You missed " + missedAmmo + " bullets in this round.");
             System.out.println(" You missed " + missedDucks + " ducks.");
-            newRound();
-        }
-        if(ammo == 0){
-            try{
-                Thread.sleep(1000);
-            } catch(InterruptedException e){
-                e.printStackTrace();
-            }
             newRound();
         }
     }
 
     private Parent createContent(){
         root.setPrefSize(gameWidth,gameHeight);
-        //root.setStyle("-fx-background-color: deepskyblue;");
         Image img = new Image("DuckHunt/images/gameBackground.png");
         BackgroundImage background = new BackgroundImage(img,
                 BackgroundRepeat.NO_REPEAT,
@@ -119,7 +89,7 @@ public class DuckHunt extends Application {
         root.setMinWidth(img.getWidth());
         root.setMinHeight(img.getHeight());
         newRound();
-        timer = new AnimationTimer() {
+        AnimationTimer timer = new AnimationTimer() {
             @Override
             public void handle(long now) {
                 onUpdate();
@@ -131,10 +101,9 @@ public class DuckHunt extends Application {
 
     private void newRound(){
         System.out.println("Round number " + roundNum++);
-
+        int NUM_OF_DUCKS = 2;
         for (int i = 0; i < NUM_OF_DUCKS; i++){
             Duck duck = new Duck();
-
             if(roundNum > 50){duck.setSpeed(6);}
             else if(roundNum > 40){duck.setSpeed(5);}
             else if(roundNum > 30){duck.setSpeed(4);}
@@ -142,15 +111,15 @@ public class DuckHunt extends Application {
             else if(roundNum > 10){duck.setSpeed(2);} //default speed is 1
             ducks.add(duck);
             root.getChildren().add(duck);
-            ammo = NUM_OF_AMMO;killedDucks++;
+            ammo = NUM_OF_AMMO;
             missedAmmo = 0;
         }
     }
 
     private void removeDuck(Duck duck) {
-        this.ducks.removeIf(d -> d == duck);
-        this.root.getChildren().removeIf(d -> d == duck);
-        //System.out.println("KachaRachna");
+        duck.setCurrentState(Duck.DYING);
+        this.ducks.removeIf(d -> d == duck); // from ArrayList
+        this.root.getChildren().removeIf(d -> d == duck); //from Pane
     }
     public static void main(String[] args) {
         launch(args);
