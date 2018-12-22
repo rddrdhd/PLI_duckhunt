@@ -24,7 +24,7 @@ public class DuckHunt extends Application {
     public static final int gameHeight = 600;
 
     private Pane root = new Pane();
-    private List<Duck> ducks = new ArrayList<>();
+    private List<FlyDuck> flyDucks = new ArrayList<>();
 
     private final int NUM_OF_AMMO = 3;
     private int ammo = NUM_OF_AMMO;
@@ -34,9 +34,12 @@ public class DuckHunt extends Application {
     private int killedDucks = 0;
     private int missedDucks = 0;
     private int missedAmmo = 0;
+
     private Text scoreText = new Text();
     private Text ammoText = new Text();
     private Text gameOver = new Text();
+    private Text roundText = new Text();
+    private Text missText = new Text();
 
     @Override
     public void  start(Stage stage) {
@@ -48,13 +51,13 @@ public class DuckHunt extends Application {
 
         scene.setOnMousePressed(new EventHandler<MouseEvent>() {
             public void handle(MouseEvent event) {
-                for (Duck duck : ducks) {
-                    if (duck.isPressed()) {
-                        duck.setCurrentState(Duck.DYING);
-                        removeDuck(duck);
+                for (FlyDuck flyDuck : flyDucks) {
+                    if (flyDuck.isPressed()) {
+                        flyDuck.setCurrentState(FlyDuck.DYING);
+                        removeDuck(flyDuck);
                         killedDucks++;
                         missedAmmo--;
-                        System.out.println(" You killed " + killedDucks + ". duck.");
+                        System.out.println(" You killed " + killedDucks + ". flyDuck.");
                         break;
                     }
                 }
@@ -65,8 +68,10 @@ public class DuckHunt extends Application {
 
         root.getChildren().add(scoreText);
         root.getChildren().add(ammoText);
-
+        root.getChildren().add(roundText);
+        root.getChildren().add(missText);
         root.getChildren().add(gameOver);
+
         stage.setScene(scene);
         stage.setTitle("DuckHunt");
         stage.show();
@@ -75,22 +80,21 @@ public class DuckHunt extends Application {
 
     private void onUpdate(){
 
-        List<Duck> ducksToRemove = new ArrayList<>();
-        this.ducks.forEach(duck -> {
-            duck.moveLikeDuck();
-            if (duck.getTranslateY() + duck.getHeight() < 0 || ammo == 0) {
-                ducksToRemove.add(duck);
+        List<FlyDuck> ducksToRemove = new ArrayList<>();
+        this.flyDucks.forEach(flyDuck -> {
+            flyDuck.moveLikeDuck();
+            if (flyDuck.getTranslateY() + flyDuck.getHeight() < 0 || ammo == 0) {
+                ducksToRemove.add(flyDuck);
                 missedDucks++;
 
             }
-            duck.setImage(duck.getCurrentState());
+            flyDuck.setImage(flyDuck.getCurrentState());
         });
         ducksToRemove.forEach(this::removeDuck);
         if(ammo == 0){
             missCount+=1;
         }
-        if(this.ducks.isEmpty()){
-            //System.out.println(" You missed " + missedAmmo + " bullets in this round.");
+        if(this.flyDucks.isEmpty()){
             //System.out.println(" You missed " + missedDucks + " ducks.");
             System.out.println("Max: " + MAX_MISS_COUNT);
             int a =  missedDucks+missCount;
@@ -102,13 +106,21 @@ public class DuckHunt extends Application {
 
 
         scoreText.setText("Score: " + killedDucks*100);
-        scoreText.setTranslateX(gameWidth/16);
+        scoreText.setTranslateX(gameWidth/16*6);
         scoreText.setTranslateY(32);
-        scoreText.setFont(Font.font(20));
-       ammoText.setText("Remaining ammo: " + ammo);
-        ammoText.setTranslateX(gameWidth/4);
+        scoreText.setFont(Font.font(40));
+       ammoText.setText("Ammo: " + ammo);
+        ammoText.setTranslateX(gameWidth/100);
         ammoText.setTranslateY(32);
         ammoText.setFont(Font.font(20));
+        roundText.setText("Round " + roundNum);
+        roundText.setTranslateX(gameWidth/16*14);
+        roundText.setTranslateY(32);
+        roundText.setFont(Font.font(20));
+        missText.setText("Life: " + (MAX_MISS_COUNT-missCount));
+        missText.setTranslateX(gameWidth/16*13);
+        missText.setTranslateY(gameHeight/16*15);
+        missText.setFont(Font.font(20));
 
         if(missCount + missedDucks >= MAX_MISS_COUNT){
 
@@ -120,6 +132,7 @@ public class DuckHunt extends Application {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+            System.out.println("GAME OVER\nYour score: " + killedDucks*100);
             Platform.exit();
         }
 
@@ -127,15 +140,15 @@ public class DuckHunt extends Application {
 
     private Parent createContent(){
         root.setPrefSize(gameWidth,gameHeight);
-        Image img = new Image("DuckHunt/images/gameBackground.png");
-        BackgroundImage background = new BackgroundImage(img,
+        Image bgr = new Image("DuckHunt/images/gameBackground.png");
+        BackgroundImage background = new BackgroundImage(bgr,
                 BackgroundRepeat.NO_REPEAT,
                 BackgroundRepeat.NO_REPEAT,
                 BackgroundPosition.DEFAULT,
                 BackgroundSize.DEFAULT);
         root.setBackground(new Background(background));
-        root.setMinWidth(img.getWidth());
-        root.setMinHeight(img.getHeight());
+        root.setMinWidth(bgr.getWidth());
+        root.setMinHeight(bgr.getHeight());
         newRound();
         AnimationTimer timer = new AnimationTimer() {
             @Override
@@ -151,23 +164,29 @@ public class DuckHunt extends Application {
         System.out.println("Round number " + roundNum++);
         int NUM_OF_DUCKS = 2;
         for (int i = 0; i < NUM_OF_DUCKS; i++){
-            Duck duck = new Duck();
-            if(roundNum > 50){duck.setSpeed(6);}
-            else if(roundNum > 40){duck.setSpeed(5);}
-            else if(roundNum > 30){duck.setSpeed(4);}
-            else if(roundNum > 20){duck.setSpeed(3);}
-            else if(roundNum > 10){duck.setSpeed(2);} //default speed is 1
-            ducks.add(duck);
-            root.getChildren().add(duck);
+            FlyDuck flyDuck = new FlyDuck();
+            if(killedDucks > 50){
+                flyDuck.setSpeed(6);}
+            else if(killedDucks > 40){
+                flyDuck.setSpeed(5);}
+            else if(killedDucks > 30){
+                flyDuck.setSpeed(4);}
+            else if(killedDucks > 20){
+                flyDuck.setSpeed(3);}
+            else if(killedDucks > 10){
+                flyDuck.setSpeed(2);}
+            else{flyDuck.setSpeed(1);}
+            flyDucks.add(flyDuck);
+            root.getChildren().add(flyDuck);
             ammo = NUM_OF_AMMO;
             missedAmmo = 0;
         }
     }
 
-    private void removeDuck(Duck duck) {
-        duck.setCurrentState(Duck.DYING);
-        this.ducks.removeIf(d -> d == duck); // from ArrayList
-        this.root.getChildren().removeIf(d -> d == duck); //from Pane
+    private void removeDuck(FlyDuck flyDuck) {
+        flyDuck.setCurrentState(FlyDuck.DYING);
+        this.flyDucks.removeIf(d -> d == flyDuck); // from ArrayList
+        this.root.getChildren().removeIf(d -> d == flyDuck); //from Pane
 
 
     }

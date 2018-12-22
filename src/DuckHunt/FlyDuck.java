@@ -7,7 +7,7 @@ import javafx.scene.paint.ImagePattern;
 
 import java.util.Random;
 
-public class Duck extends Sprite implements IMovable{
+public class FlyDuck extends Sprite implements IMovable{
     private  static Sprite duck;
     private Image GUR0;
     private Image GUR1;
@@ -33,7 +33,7 @@ public class Duck extends Sprite implements IMovable{
     private double speedY = 0.4;
     private int currentState;
 
-    Duck(){
+    FlyDuck(){
         super(Sprite.randomX(), 391,80,80,"duck",Color.BLANCHEDALMOND);
         loadImages();
         Random random = new Random();
@@ -77,7 +77,7 @@ public class Duck extends Sprite implements IMovable{
     }
     @Override
     public String toString() {
-        return "Duck (x=" + this.getTranslateX() + ", y=" + this.getTranslateY() + ", width=" + this.getWidth() + ", height="
+        return "FlyDuck (x=" + this.getTranslateX() + ", y=" + this.getTranslateY() + ", width=" + this.getWidth() + ", height="
                 + this.getHeight() + ", color=" + this.getFill()+ ")";
     }
 
