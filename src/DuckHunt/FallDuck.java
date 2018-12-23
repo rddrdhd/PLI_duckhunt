@@ -20,6 +20,8 @@ public class FallDuck extends Sprite implements IMovable{
     public static final int C = 2;
     public static final int D = 3;
 
+    private long time = System.currentTimeMillis();
+
 
     private int currentState;
 
@@ -33,8 +35,14 @@ public class FallDuck extends Sprite implements IMovable{
     int getCurrentState(){
         return this.currentState;
     }
-    void setCurrentState(int state){
-        this.currentState = state;
+    void setCurrentState(){
+
+        long currTime = System.currentTimeMillis();
+        if(time + 50 >= currTime){
+            this.currentState = this.getCurrentState()+1;
+        }
+
+
     }
 
     private void loadImages(){

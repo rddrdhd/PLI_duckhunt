@@ -94,6 +94,7 @@ public class DuckHunt extends Application {
         });
         this.fallDucks.forEach(fallDuck -> {
             fallDuck.moveDown();
+            fallDuck.setCurrentState();
             if (fallDuck.getTranslateY() + fallDuck.getHeight() > gameHeight  || ammo == 0) {
                 fallDucksToRemove.add(fallDuck);
                 missedDucks++;
