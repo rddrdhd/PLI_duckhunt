@@ -29,11 +29,10 @@ public class DuckHunt extends Application {
     private final int NUM_OF_AMMO = 3;
     private int ammo = NUM_OF_AMMO;
     private final int MAX_MISS_COUNT = NUM_OF_AMMO*5;
-    private int missCount; //counts when u have 0 ammo
+    private int missCount = 0;
     private int roundNum = 0;
     private int killedDucks = 0;
     private int missedDucks = 0;
-    private int missedAmmo = 0;
 
     private Text scoreText = new Text();
     private Text ammoText = new Text();
@@ -53,19 +52,18 @@ public class DuckHunt extends Application {
             public void handle(MouseEvent event) {
                 for (FlyDuck flyDuck : flyDucks) {
                     if (flyDuck.isPressed()) {
-                        flyDuck.setCurrentState(FlyDuck.DYING);
                         removeDuck(flyDuck);
                         killedDucks++;
-                        missedAmmo--;
-                        System.out.println(" You killed " + killedDucks + ". flyDuck.");
+                        System.out.println(" You killed " + killedDucks + ". duck.");
+
+                        missCount--;
                         break;
                     }
                 }
                 ammo--;
-                missedAmmo++;
+                missCount++;
             }
         });
-
         root.getChildren().add(scoreText);
         root.getChildren().add(ammoText);
         root.getChildren().add(roundText);
@@ -79,7 +77,6 @@ public class DuckHunt extends Application {
 
 
     private void onUpdate(){
-
         List<FlyDuck> ducksToRemove = new ArrayList<>();
         this.flyDucks.forEach(flyDuck -> {
             flyDuck.moveLikeDuck();
@@ -91,43 +88,16 @@ public class DuckHunt extends Application {
             flyDuck.setImage(flyDuck.getCurrentState());
         });
         ducksToRemove.forEach(this::removeDuck);
-        if(ammo == 0){
-            missCount+=1;
-        }
         if(this.flyDucks.isEmpty()){
-            //System.out.println(" You missed " + missedDucks + " ducks.");
             System.out.println("Max: " + MAX_MISS_COUNT);
             int a =  missedDucks+missCount;
             System.out.println(" You missed: " + a );
 
             newRound();
         }
-
-
-
-        scoreText.setText("Score: " + killedDucks*100);
-        scoreText.setTranslateX(gameWidth/16*6);
-        scoreText.setTranslateY(32);
-        scoreText.setFont(Font.font(40));
-       ammoText.setText("Ammo: " + ammo);
-        ammoText.setTranslateX(gameWidth/100);
-        ammoText.setTranslateY(32);
-        ammoText.setFont(Font.font(20));
-        roundText.setText("Round " + roundNum);
-        roundText.setTranslateX(gameWidth/16*14);
-        roundText.setTranslateY(32);
-        roundText.setFont(Font.font(20));
-        missText.setText("Life: " + (MAX_MISS_COUNT-missCount));
-        missText.setTranslateX(gameWidth/16*13);
-        missText.setTranslateY(gameHeight/16*15);
-        missText.setFont(Font.font(20));
+        setText();
 
         if(missCount + missedDucks >= MAX_MISS_COUNT){
-
-            gameOver.setText("GAME\nOVER");
-            gameOver.setFont(Font.font(70));
-            gameOver.setTranslateX(gameWidth/2);
-            gameOver.setTranslateY(gameHeight/2);
             try { Thread.sleep(5000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -137,6 +107,7 @@ public class DuckHunt extends Application {
         }
 
     }
+
 
     private Parent createContent(){
         root.setPrefSize(gameWidth,gameHeight);
@@ -165,30 +136,46 @@ public class DuckHunt extends Application {
         int NUM_OF_DUCKS = 2;
         for (int i = 0; i < NUM_OF_DUCKS; i++){
             FlyDuck flyDuck = new FlyDuck();
-            if(killedDucks > 50){
-                flyDuck.setSpeed(6);}
-            else if(killedDucks > 40){
-                flyDuck.setSpeed(5);}
-            else if(killedDucks > 30){
-                flyDuck.setSpeed(4);}
-            else if(killedDucks > 20){
-                flyDuck.setSpeed(3);}
-            else if(killedDucks > 10){
-                flyDuck.setSpeed(2);}
+
+            if(killedDucks > 50){ flyDuck.setSpeed(6);}
+            else if(killedDucks > 40){flyDuck.setSpeed(5);}
+            else if(killedDucks > 30){flyDuck.setSpeed(4);}
+            else if(killedDucks > 20){flyDuck.setSpeed(3);}
+            else if(killedDucks > 10){flyDuck.setSpeed(2);}
             else{flyDuck.setSpeed(1);}
+
             flyDucks.add(flyDuck);
             root.getChildren().add(flyDuck);
             ammo = NUM_OF_AMMO;
-            missedAmmo = 0;
         }
     }
 
     private void removeDuck(FlyDuck flyDuck) {
-        flyDuck.setCurrentState(FlyDuck.DYING);
         this.flyDucks.removeIf(d -> d == flyDuck); // from ArrayList
         this.root.getChildren().removeIf(d -> d == flyDuck); //from Pane
-
-
+    }
+    private void setText(){
+        scoreText.setText("Score: " + killedDucks*100);
+        scoreText.setTranslateX(gameWidth/16*6);
+        scoreText.setTranslateY(32);
+        scoreText.setFont(Font.font(40));
+        ammoText.setText("Ammo: " + ammo);
+        ammoText.setTranslateX(gameWidth/100);
+        ammoText.setTranslateY(32);
+        ammoText.setFont(Font.font(20));
+        roundText.setText("Round " + roundNum);
+        roundText.setTranslateX(gameWidth/16*14);
+        roundText.setTranslateY(32);
+        roundText.setFont(Font.font(20));
+        missText.setText("Missed: " + missCount + "/" + MAX_MISS_COUNT);
+        missText.setTranslateX(gameWidth/16*13);
+        missText.setTranslateY(gameHeight/16*15);
+        missText.setFont(Font.font(20));
+        if(missCount + missedDucks >= MAX_MISS_COUNT){
+            gameOver.setText("GAME\nOVER");
+            gameOver.setFont(Font.font(70));
+            gameOver.setTranslateX(gameWidth/2);
+            gameOver.setTranslateY(gameHeight/2);}
     }
     public static void main(String[] args) {
         launch(args);
