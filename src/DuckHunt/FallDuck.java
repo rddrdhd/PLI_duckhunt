@@ -24,10 +24,10 @@ public class FallDuck extends Sprite implements IMovable{
     private int currentState;
 
     FallDuck(){
-        super(Sprite.randomX(), 0,80,80,"duck",Color.BLANCHEDALMOND);
+        super(Sprite.randomX(), 0,43,73,"duck",Color.BLANCHEDALMOND);
         loadImages();
         Random random = new Random();
-        this.currentState = random.nextInt(2) ;
+        this.currentState = random.nextInt(4) ;
     }
 
     int getCurrentState(){
@@ -70,17 +70,17 @@ public class FallDuck extends Sprite implements IMovable{
     public void setSpeed(int level){
         switch(level){
             case 1:
-                this.speedY = -0.4;
+                this.speedY = 0.0;
             case 2:
-                this.speedY = -0.6;
+                this.speedY = 0.3;
             case 3:
-                this.speedY = -0.8;
+                this.speedY = 0.4;
             case 4:
-                this.speedY = -1.0;
+                this.speedY = 0.5;
             case 5:
-                this.speedY = -1.2;
+                this.speedY = 0.6;
             case 6:
-                this.speedY = -1.4;
+                this.speedY = 0.7;
         }
     }
 
