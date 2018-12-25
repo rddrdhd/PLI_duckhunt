@@ -12,8 +12,15 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.*;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 
 public class DuckHunt extends Application {
@@ -27,6 +34,7 @@ public class DuckHunt extends Application {
     private Pane root = new Pane();
     private List<FlyDuck> flyDucks = new ArrayList<>();
     private List<FallDuck> fallDucks = new ArrayList<>();
+
 
     private int ammo = NUM_OF_AMMO;
     private final int MAX_MISS_COUNT = NUM_OF_AMMO*5;
@@ -87,6 +95,7 @@ public class DuckHunt extends Application {
         this.flyDucks.forEach(flyDuck -> {
             flyDuck.moveLikeDuck();
             if (flyDuck.getTranslateY() + flyDuck.getHeight() < 0 || ammo == 0) {
+                if(ammo!=0){missCount++;}
                 flyDucksToRemove.add(flyDuck);
                 missedDucks++;
             }
@@ -96,28 +105,63 @@ public class DuckHunt extends Application {
             fallDuck.moveDown();
             fallDuck.setCurrentState();
             if (fallDuck.getTranslateY() + fallDuck.getHeight() > gameHeight  || ammo == 0) {
+                if(ammo!=0){missCount++;}
                 fallDucksToRemove.add(fallDuck);
                 missedDucks++;
             }
             fallDuck.setImage(fallDuck.getCurrentState());
         });
+
         flyDucksToRemove.forEach(this::removeFlyDuck);
         fallDucksToRemove.forEach(this::removeFallDuck);
         if(this.flyDucks.isEmpty() && this.fallDucks.isEmpty()){
-
             newRound();
         }
         setText();
+        if(missCount == MAX_MISS_COUNT ){ //LocalDateTime.now() + " ~ score: " + killedDucks * 100
 
-        if(missCount >= MAX_MISS_COUNT){
-            try { Thread.sleep(5000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+
             System.out.println("GAME OVER\nYour score: " + killedDucks*100);
-            Platform.exit();
+           if(saveScore()){
+
+               Platform.exit();
+           }
+           else{
+               System.out.println("Score was not saved.");
+           }
         }
 
+    }
+
+    private boolean saveScore(){
+        Writer writer = null;
+        boolean written = false;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        try {
+            Scanner scanner = new Scanner(new File("highscores.txt"));
+            int lineNum = 0;
+            while(scanner.hasNextLine()){
+                String line = scanner.nextLine();
+                lineNum++;
+                if(line.contains(LocalDateTime.now().format(formatter))){
+                    written = true;
+                }
+            }
+            if(!written){
+                writer = new BufferedWriter(new FileWriter("highscores.txt", true));
+                writer.write(LocalDateTime.now().format(formatter) + " ~ score: " + killedDucks * 100 + "\n");
+
+            }
+
+        } catch (IOException ex) {
+            System.out.print("reporting");// Report
+            return false;
+        } finally {
+            try {
+                assert writer != null;
+                writer.close();} catch (Exception ex) {/*ignore*/}
+        }
+        return true;
     }
 
 
