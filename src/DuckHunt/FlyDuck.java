@@ -1,17 +1,15 @@
 package DuckHunt;
 
-import com.sun.xml.internal.bind.v2.TODO;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
-
 import java.util.Random;
 
 public class FlyDuck extends Sprite implements IMovable{
-    private Image GUR0;
-    private Image GUL0;
-    private Image D;
-    public static final int GOING_UP_RIGHT = 0;
+    private Image GUR0; //Going up right
+    private Image GUL0; //Going up left
+    private Image D; // dying
+    public static final int GOING_UP_RIGHT = 0; //for currentstate -> images
     public static final int GOING_UP_LEFT = 1;
     private double speedX = 0.6;
     private double speedY = 0.4;
@@ -21,7 +19,7 @@ public class FlyDuck extends Sprite implements IMovable{
         super(Sprite.randomX(), 391,80,80,"duck",Color.BLANCHEDALMOND);
         loadImages();
         Random random = new Random();
-        this.currentState = random.nextInt(2) ;
+        this.currentState = random.nextInt(2) ; //generates if duck flies left/right
     }
 
     int getCurrentState(){

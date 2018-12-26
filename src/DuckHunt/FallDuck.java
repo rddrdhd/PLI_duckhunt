@@ -3,19 +3,16 @@ package DuckHunt;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
-
 import java.util.Random;
 
 public class FallDuck extends Sprite implements IMovable{
-    private  static Sprite duck;
     private Image imgA;
     private Image imgB;
-
     private Image imgC;
     private Image imgD;
-    private double speedX ;
+    private double speedX ; //We dont need that, the duck just falls
     private double speedY ;
-    public static final int A = 0;
+    public static final int A = 0; //for currentstate -> images
     public static final int B = 1;
     public static final int C = 2;
     public static final int D = 3;
@@ -29,7 +26,7 @@ public class FallDuck extends Sprite implements IMovable{
         super(Sprite.randomX(), 0,43,73,"duck",Color.BLANCHEDALMOND);
         loadImages();
         Random random = new Random();
-        this.currentState = random.nextInt(4) ;
+        this.currentState = random.nextInt(4) ; //Random image from 4 falling images
     }
 
     int getCurrentState(){
@@ -41,8 +38,6 @@ public class FallDuck extends Sprite implements IMovable{
         if(time + 50 >= currTime){
             this.currentState = this.getCurrentState()+1;
         }
-
-
     }
 
     private void loadImages(){
