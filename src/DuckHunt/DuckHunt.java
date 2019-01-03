@@ -111,6 +111,7 @@ public class DuckHunt extends Application {
         setText();
         if(missCount >= MAX_MISS_COUNT ){ //if missed more than limit
            if(saveScore()){ //saving score
+               saveScore();
                Platform.exit(); //game ends
            }
            else{
